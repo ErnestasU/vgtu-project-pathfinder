@@ -19,6 +19,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.build.timestamp.format>yyyy-MM-dd_HHmmss</maven.build.timestamp.format>
         <apache.commons>3.5</apache.commons>
+        <google.guava>19.0</google.guava>
         <servlet.api>3.0.1</servlet.api>
     </properties>
 
@@ -33,6 +34,11 @@
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>${servlet.api}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${google.guava}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
