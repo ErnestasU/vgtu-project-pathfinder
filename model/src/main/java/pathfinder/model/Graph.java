@@ -1,25 +1,33 @@
 package pathfinder.model;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created by TT on 2016-11-18.
  */
 public class Graph {
 
-    private List<Vertex> vertices;
-    private List<Edge> edges;
+    private Set<Vertex> vertices;
+    private Set<Edge> edges;
 
-    public Graph(List<Vertex> vertices, List<Edge> edges) {
+    public Graph(Set<Vertex> vertices, Set<Edge> edges) {
         this.vertices = vertices;
         this.edges = edges;
     }
 
-    public List<Vertex> getVertices() {
+    public Set<Vertex> getVertices() {
         return vertices;
     }
 
-    public List<Edge> getEdges() {
+    public Set<Edge> getEdges() {
         return edges;
+    }
+
+    @Override
+    public String toString() {
+        return "Graph{" +
+                "vertices=" + vertices +
+                ", edges=" + edges +
+                '}';
     }
 }

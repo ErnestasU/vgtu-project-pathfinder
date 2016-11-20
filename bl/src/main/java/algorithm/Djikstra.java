@@ -1,19 +1,25 @@
 package algorithm;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import pathfinder.model.Edge;
 import pathfinder.model.Graph;
 import pathfinder.model.Vertex;
-
-
-import java.util.*;
 
 /**
  * Created by TT on 2016-11-18.
  */
 public class Djikstra {
 
-    private final List<Vertex> nodes;
-    private final List<Edge> edges;
+    private final Set<Vertex> nodes;
+    private final Set<Edge> edges;
     private Set<Vertex> settledNodes;
     private Set<Vertex> unSettledNodes;
     private Map<Vertex, Vertex> predecessors;
@@ -21,13 +27,13 @@ public class Djikstra {
 
     public Djikstra(Graph graph) {
         // create a copy of the array so that we can operate on this array
-        this.nodes = new ArrayList<Vertex>(graph.getVertices());
-        this.edges = new ArrayList<Edge>(graph.getEdges());
+        this.nodes = new LinkedHashSet<>(graph.getVertices());
+        this.edges = new LinkedHashSet<>(graph.getEdges());
     }
 
     public void execute(Vertex source) {
-        settledNodes = new HashSet<Vertex>();
-        unSettledNodes = new HashSet<Vertex>();
+        settledNodes = new LinkedHashSet<>();
+        unSettledNodes = new LinkedHashSet<>();
         distance = new HashMap<Vertex, Integer>();
         predecessors = new HashMap<Vertex, Vertex>();
         distance.put(source, 0);
@@ -56,9 +62,9 @@ public class Djikstra {
 
     private int getDistance(Vertex node, Vertex target) {
         for (Edge edge : edges) {
-            if (edge.getSource().equals(node)
-                    && edge.getDestination().equals(target)) {
-                return edge.getWeight();
+            if (edge.getSourceNode().equals(node)
+                    && edge.getDestNode().equals(target)) {
+                return edge.getDistance();
             }
         }
         throw new RuntimeException("Should not happen");
@@ -67,9 +73,9 @@ public class Djikstra {
     private List<Vertex> getNeighbors(Vertex node) {
         List<Vertex> neighbors = new ArrayList<Vertex>();
         for (Edge edge : edges) {
-            if (edge.getSource().equals(node)
-                    && !isSettled(edge.getDestination())) {
-                neighbors.add(edge.getDestination());
+            if (edge.getSourceNode().equals(node)
+                    && !isSettled(edge.getDestNode())) {
+                neighbors.add(edge.getDestNode());
             }
         }
         return neighbors;
