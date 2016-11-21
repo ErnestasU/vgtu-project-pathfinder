@@ -42,7 +42,9 @@ public class PathFinderUiContext implements UiContext {
     private void initTextures() {
         // initial path map
         texturesRegions.put(TextureName.PATHMAP, TextureUtils.buildTextureRegion(TextUtils.joinPath(MAP_DATA_DIR,"map1.png"),
-                                                                                    0, 0, 600, 500));
+                                                                                    0, 0, 655, 542));
+
+
         // the rest textures....
     }
 
