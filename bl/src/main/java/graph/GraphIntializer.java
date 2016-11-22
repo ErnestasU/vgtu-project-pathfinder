@@ -1,10 +1,13 @@
 package graph;
 
+import algorithm.Djikstra;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Iterables;
-
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import pathfinder.model.Edge;
+import pathfinder.model.Graph;
+import pathfinder.model.Vertex;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -15,11 +18,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import algorithm.Djikstra;
-import pathfinder.model.Edge;
-import pathfinder.model.Graph;
-import pathfinder.model.Vertex;
 
 import static graph.attributes.MapInitialDataMetaData.MAP1_DATA_FILE_NAME;
 import static graph.attributes.MapInitialDataMetaData.MAP_VERTEX_DATA_REGEXP;
@@ -37,7 +35,7 @@ public class GraphIntializer {
         Set<Edge> edges = new LinkedHashSet<>();
         GraphReader.readAndBuild(nodes, edges);
         final Graph graph = new Graph(nodes, edges);
-        LOGGER.debug(graph);
+        //LOGGER.debug(graph);
         return graph;
     }
 
@@ -103,6 +101,18 @@ public class GraphIntializer {
         LOGGER.debug("RESULT: \n");
         LOGGER.debug(result.stream().map(Vertex::toString).collect(Collectors.joining(",")));
 
+    }
+
+    // path print test
+    public static List<Vertex> getPath() {
+        BasicConfigurator.configure();
+        Djikstra djikstra = new Djikstra(new GraphIntializer().initialize());
+        Graph graph = new GraphIntializer().initialize();
+        Vertex head = graph.getVertices().iterator().next();
+        djikstra.execute(head);
+        Vertex last = Iterables.getLast(graph.getVertices());
+        List<Vertex> result = djikstra.getPath(last);
+        return result;
     }
 
 }

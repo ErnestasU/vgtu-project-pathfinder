@@ -5,13 +5,20 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import graph.GraphIntializer;
 import pathfinder.app.PathFinderScreensManager;
 import pathfinder.app.attributes.TextureName;
 import pathfinder.app.context.ScreensContextHolder;
 import pathfinder.app.context.UiContext;
+import pathfinder.model.Vertex;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Ernestas
@@ -21,24 +28,37 @@ public class PathFinderMenu extends ScreenAdapter {
 
     private PathFinderScreensManager game;
     private OrthographicCamera guiCam;
+    private Stage stage;
+    private ShapeRenderer shapeRenderer;
+    private boolean drawPath;
+    private List<Vertex> path;
+    private Set<Vertex> nodes;
 
     public PathFinderMenu(PathFinderScreensManager game) {
         this.game = game;
         guiCam = new OrthographicCamera(1024, 768);
-        guiCam.position.set(320 / 2, 480 / 2, 0);
+        guiCam.position.set(150, 165, 0);
+        stage = new Stage();
+        shapeRenderer = new ShapeRenderer();
+        nodes = new GraphIntializer().initialize().getVertices();
     }
 
     public void draw () {
         UiContext context = ScreensContextHolder.get();
         GL20 gl = Gdx.gl;
-        gl.glClearColor(213, 218, 223, 1);
+        gl.glClearColor(138/255f, 138/255f, 92/255f, 0);
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        gl.glLineWidth(6);
         guiCam.update();
-
-        Stage stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
         TextButton button = new TextButton("Paskaiciuoti", createBasicSkin());
-        button.setPosition(0, 700);
+        button.setPosition(5, 685);
+        button.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                drawPath = true;
+                path = GraphIntializer.getPath();
+            }
+        });
         stage.addActor(button);
         stage.draw();
 
@@ -48,21 +68,39 @@ public class PathFinderMenu extends ScreenAdapter {
         game.getBatcher().draw(context.getTextureRegionByName(TextureName.PATHMAP), 0, 0, 655, 542);
         game.getBatcher().end();
 
-        gl.glLineWidth(6);
-        ShapeRenderer shapeRenderer = new ShapeRenderer();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setProjectionMatrix(guiCam.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.line(65, 337, 210, 430);
-        shapeRenderer.line(210, 430, 310, 470);
+        shapeRenderer.setColor(Color.BLUE);
+        for (Vertex node : nodes) {
+            shapeRenderer.circle(node.getXCoord(), node.getYCoord(), 8);
+        }
         shapeRenderer.end();
 
+        if (drawPath) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setProjectionMatrix(guiCam.combined);
+            shapeRenderer.setColor(Color.RED);
+            int x1, x2, y1, y2;
+            for (int i = 0; i < path.size() - 1 ; i++) {
+                x1 = path.get(i).getXCoord();
+                y1 = path.get(i).getYCoord();
+                x2 = path.get(i + 1).getXCoord();
+                y2 = path.get(i + 1).getYCoord();
+                shapeRenderer.line(x1, y1, x2, y2);
+            }
+            shapeRenderer.end();
+        }
 
     }
 
     @Override
     public void render(float delta) {
         draw();
+    }
+
+    @Override
+    public void show(){
+        Gdx.input.setInputProcessor(stage);
     }
 
     private Skin createBasicSkin(){
@@ -77,9 +115,9 @@ public class PathFinderMenu extends ScreenAdapter {
         pixmap.fill();
         skin.add("background",new Texture(pixmap));
 
-        //Create a button style
+        //Create a button style;
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.newDrawable("background", Color.GRAY);
+        textButtonStyle.up = skin.newDrawable("background", new Color(26/255f, 26/255f, 26/255f, 1));
         textButtonStyle.down = skin.newDrawable("background", Color.DARK_GRAY);
         textButtonStyle.checked = skin.newDrawable("background", Color.DARK_GRAY);
         textButtonStyle.over = skin.newDrawable("background", Color.LIGHT_GRAY);
