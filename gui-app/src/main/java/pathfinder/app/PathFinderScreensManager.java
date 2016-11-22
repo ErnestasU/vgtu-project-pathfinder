@@ -3,7 +3,7 @@ package pathfinder.app;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import pathfinder.app.components.PathFinderMenu;
+import pathfinder.app.components.MainScreenAdapter;
 import pathfinder.app.context.PathFinderUiContext;
 
 /**
@@ -18,7 +18,7 @@ public class PathFinderScreensManager extends Game {
     public void create() {
         batcher = new SpriteBatch();
         PathFinderUiContext.init();
-        setScreen(new PathFinderMenu(this));
+        setScreen(new MainScreenAdapter(this));
     }
 
     public SpriteBatch getBatcher() {

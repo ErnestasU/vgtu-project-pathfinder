@@ -6,13 +6,13 @@ package pathfinder.app.context;
  */
 public class ScreensContextHolder {
 
-    private static UiContext context;
+    private static GraphUiContext context;
 
-    public static synchronized UiContext get() {
+    public static synchronized GraphUiContext get() {
         return context;
     }
 
-    static synchronized void hold(UiContext context) {
+    static synchronized void hold(GraphUiContext context) {
         if (ScreensContextHolder.context != null) {
             throw new IllegalStateException("already holds!");
         }
