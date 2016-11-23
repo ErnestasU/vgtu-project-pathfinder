@@ -12,7 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import graph.GraphIntializer;
+import graph.GraphInitializer;
 import pathfinder.app.attributes.TextureName;
 import pathfinder.app.utils.TextUtils;
 import pathfinder.app.utils.TextureUtils;
@@ -49,7 +49,7 @@ public class PathFinderUiContext implements GraphUiContext {
     public static void init() {
         final PathFinderUiContext context = new PathFinderUiContext();
         ScreensContextHolder.hold(context);
-        context.graph = GraphIntializer.initialize();
+        context.graph = GraphInitializer.initialize();
         FileHandle baseFileHandle = Gdx.files.internal("localization");
         context.uiProps = I18NBundle.createBundle(baseFileHandle, Locale.getDefault());
         context.initTextures();

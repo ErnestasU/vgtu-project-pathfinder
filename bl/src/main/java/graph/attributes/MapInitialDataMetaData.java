@@ -8,4 +8,5 @@ public class MapInitialDataMetaData {
 
     public static final String MAP1_DATA_FILE_NAME = "map1.dat";
     public static final String MAP_VERTEX_DATA_REGEXP = "^([A-Z]).+:(\\d)+;(\\d)+$";
+    public static final String MAP_FEATURED_EDGE_DATA_REGEXP = "^([A-Z]+.*:?):(\\d+)\\{(.*)\\}$";
 }

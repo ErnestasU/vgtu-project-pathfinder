@@ -10,33 +10,41 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import command.impl.DjikstraCommand;
+import graph.utils.EnumUtils;
 import pathfinder.model.Edge;
+import pathfinder.model.EdgeAttribute;
+import pathfinder.model.FeaturedEdge;
 import pathfinder.model.Graph;
 import pathfinder.model.Vertex;
 
 import static graph.attributes.MapInitialDataMetaData.MAP1_DATA_FILE_NAME;
+import static graph.attributes.MapInitialDataMetaData.MAP_FEATURED_EDGE_DATA_REGEXP;
 import static graph.attributes.MapInitialDataMetaData.MAP_VERTEX_DATA_REGEXP;
 
 /**
  * @author Ernestas
  * @since 11/20/2016
  */
-public class GraphIntializer {
+public class GraphInitializer {
 
-    private static final Logger LOGGER = Logger.getLogger(GraphIntializer.class);
+    private static final Logger LOGGER = Logger.getLogger(GraphInitializer.class);
 
     public static Graph initialize() {
         Set<Vertex> nodes = new LinkedHashSet<>();
         Set<Edge> edges = new LinkedHashSet<>();
         GraphReader.readAndBuild(nodes, edges);
         final Graph graph = new Graph(nodes, edges);
+        LOGGER.debug(graph);
         return graph;
     }
 
@@ -71,13 +79,28 @@ public class GraphIntializer {
         }
 
         private static Edge createEdge(Set<Vertex> nodes, Vertex dest, String expr) {
+            if (expr.matches(MAP_FEATURED_EDGE_DATA_REGEXP)) {
+                return createFeaturedEdge(nodes, dest, expr);
+            }
             String[] result = expr.split(":");
             final String vertexNameToAttachWith = result[0];
-            final int distanceBetweenVertexes = Integer.valueOf(result[1]);
             Optional<Vertex> srcOpt = nodes.stream().filter(v -> v.getId().equals(vertexNameToAttachWith)).findFirst();
-            Vertex src = srcOpt.orElseThrow(IllegalArgumentException::new);
-            return new Edge(src, dest, distanceBetweenVertexes);
+            final Vertex src = srcOpt.orElseThrow(IllegalArgumentException::new);
+            final int distanceBetweenVerteces = Integer.valueOf(result[1]);
+            return new Edge(src, dest, distanceBetweenVerteces);
+        }
 
+        private static FeaturedEdge createFeaturedEdge(Set<Vertex> nodes, Vertex dest, String expr) {
+            Pattern p = Pattern.compile(MAP_FEATURED_EDGE_DATA_REGEXP);
+            Matcher m = p.matcher(expr);
+            m.find();
+            String vertexNameToAttachWith = m.group(1);
+            Optional<Vertex> srcOpt = nodes.stream().filter(v -> v.getId().equals(vertexNameToAttachWith)).findFirst();
+            final Vertex src = srcOpt.orElseThrow(IllegalArgumentException::new);
+            int distanceBetweenVerteces = Integer.valueOf(m.group(2));
+            EnumSet<EdgeAttribute> vertexAttributes = EnumUtils.toSet(EdgeAttribute.class, m.group(3).split(","));
+            return new FeaturedEdge(src, dest, distanceBetweenVerteces)
+                    .ofAttributes(vertexAttributes);
         }
 
         private static Vertex createVertex(String expr) {
@@ -93,27 +116,11 @@ public class GraphIntializer {
     /**TODO: delete when pathfinder will be completed*/
     public static void main(String[] args) {
         BasicConfigurator.configure();
-        DjikstraCommand djikstra = new DjikstraCommand(new GraphIntializer().initialize());
-        Graph graph = new GraphIntializer().initialize();
+        Graph graph = new GraphInitializer().initialize();
         Vertex head = graph.getVertices().iterator().next();
-        djikstra.execute(head);
         Vertex last = Iterables.getLast(graph.getVertices());
-        List<Vertex> result = djikstra.getPath(last);
+        List<Vertex> result = DjikstraCommand.ofShortestPath(head, last, graph);
         LOGGER.debug("RESULT: \n");
         LOGGER.debug(result.stream().map(Vertex::toString).collect(Collectors.joining(",")));
-
     }
-
-    // path print test
-    public static List<Vertex> getPath() {
-        BasicConfigurator.configure();
-        DjikstraCommand djikstra = new DjikstraCommand(new GraphIntializer().initialize());
-        Graph graph = new GraphIntializer().initialize();
-        Vertex head = graph.getVertices().iterator().next();
-        djikstra.execute(head);
-        Vertex last = Iterables.getLast(graph.getVertices());
-        List<Vertex> result = djikstra.getPath(last);
-        return result;
-    }
-
 }

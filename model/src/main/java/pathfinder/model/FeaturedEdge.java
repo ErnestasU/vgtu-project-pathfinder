@@ -1,6 +1,6 @@
 package pathfinder.model;
 
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.Set;
 
 /**
@@ -9,17 +9,24 @@ import java.util.Set;
  */
 public class FeaturedEdge extends Edge {
 
-    private Set<EdgeAttribute> attributes = new HashSet<>();
+    private Set<EdgeAttribute> attributes;
 
     public FeaturedEdge(Vertex source, Vertex destination, int weight) {
         super(source, destination, weight);
     }
-    public FeaturedEdge addAttributes(EdgeAttribute attr) {
-        this.attributes.add(attr);
+    public FeaturedEdge ofAttributes(Set<EdgeAttribute> attrs) {
+        this.attributes = attrs;
         return this;
     }
 
     public Set<EdgeAttribute> getAttributes() {
         return attributes;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " \n FeaturedEdge{" +
+                "attributes=" + Arrays.toString(attributes.toArray(new EdgeAttribute[attributes.size()])) +
+                '}';
     }
 }

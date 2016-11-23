@@ -9,7 +9,7 @@
         </layout>
     </appender>
 
-    <logger name="graph.GraphIntializer">
+    <logger name="graph.GraphInitializer">
         <level value="DEBUG"/>
         <appender-ref ref="CONSOLE"/>
     </logger>
