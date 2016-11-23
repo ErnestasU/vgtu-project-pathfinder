@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 
 import command.impl.DjikstraCommand;
 import graph.utils.EnumUtils;
-import pathfinder.model.Edge;
-import pathfinder.model.EdgeAttribute;
-import pathfinder.model.FeaturedEdge;
-import pathfinder.model.Graph;
-import pathfinder.model.Vertex;
+import pathfinder.model.graph.Edge;
+import pathfinder.model.graph.EdgeAttribute;
+import pathfinder.model.graph.FeaturedEdge;
+import pathfinder.model.graph.Graph;
+import pathfinder.model.graph.Vertex;
 
 import static graph.attributes.MapInitialDataMetaData.MAP1_DATA_FILE_NAME;
 import static graph.attributes.MapInitialDataMetaData.MAP_FEATURED_EDGE_DATA_REGEXP;

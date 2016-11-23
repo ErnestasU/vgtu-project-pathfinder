@@ -1,10 +1,10 @@
 package math;
 
-import java.util.List;
+import java.util.Set;
 
-import pathfinder.model.Edge;
-import pathfinder.model.EdgeAttribute;
-import pathfinder.model.FeaturedEdge;
+import pathfinder.model.graph.Edge;
+import pathfinder.model.graph.EdgeAttribute;
+import pathfinder.model.graph.FeaturedEdge;
 
 /**
  * @author Ernestas
@@ -12,9 +12,9 @@ import pathfinder.model.FeaturedEdge;
  */
 public class CaloriesCalculator {
 
-    private List<Edge> target;
+    private Set<Edge> target;
 
-    public CaloriesCalculator(List<Edge> target) {
+    public CaloriesCalculator(Set<Edge> target) {
         this.target = target;
     }
 

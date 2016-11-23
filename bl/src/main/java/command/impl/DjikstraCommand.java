@@ -10,20 +10,40 @@ import java.util.Map;
 import java.util.Set;
 
 import command.Command;
-import pathfinder.model.Edge;
-import pathfinder.model.Graph;
-import pathfinder.model.Vertex;
+import pathfinder.model.graph.Edge;
+import pathfinder.model.graph.Graph;
+import pathfinder.model.graph.Vertex;
 
 /**
  * Created by TT on 2016-11-18.
  */
 public class DjikstraCommand implements Command<Vertex> {
 
+    private static class DistanceValue {
+
+        private int distanceNodeBetweenTarget;
+        private Edge edgeToBelong;
+
+        public DistanceValue(int distanceNodeBetweenTarget, Edge edgeToBelong) {
+            this.distanceNodeBetweenTarget = distanceNodeBetweenTarget;
+            this.edgeToBelong = edgeToBelong;
+        }
+
+        public int getDistanceNodeBetweenTarget() {
+            return distanceNodeBetweenTarget;
+        }
+
+        public Edge getEdgeToBelong() {
+            return edgeToBelong;
+        }
+    }
+
     private final Set<Vertex> nodes;
     private final Set<Edge> edges;
     private Set<Vertex> settledNodes;
     private Set<Vertex> unSettledNodes;
     private Map<Vertex, Vertex> predecessors;
+    private Set<Edge> shortestPathEdges = new LinkedHashSet<>();
     private Map<Vertex, Integer> distance;
 
     public DjikstraCommand(Graph graph) {
@@ -56,22 +76,26 @@ public class DjikstraCommand implements Command<Vertex> {
     private void findMinimalDistances(Vertex node) {
         List<Vertex> adjacentNodes = getNeighbors(node);
         for (Vertex target : adjacentNodes) {
-            if (getShortestDistance(target) > getShortestDistance(node)
-                    + getDistance(node, target)) {
-                distance.put(target, getShortestDistance(node)
-                        + getDistance(node, target));
+            int currentShortestDist = getShortestDistance(target);
+            int nodeDist = getShortestDistance(node);
+            final DistanceValue distanceVal = getDistance(node, target);
+            int distNodeBetweenTarget = distanceVal.getDistanceNodeBetweenTarget();
+            if (currentShortestDist > (nodeDist + distNodeBetweenTarget)) {
+                distance.put(target, (nodeDist + distNodeBetweenTarget));
                 predecessors.put(target, node);
+                shortestPathEdges.add(distanceVal.getEdgeToBelong());
                 unSettledNodes.add(target);
             }
         }
 
     }
 
-    private int getDistance(Vertex node, Vertex target) {
+    private DistanceValue getDistance(Vertex node, Vertex target) {
         for (Edge edge : edges) {
             if (edge.getSourceNode().equals(node)
                     && edge.getDestNode().equals(target)) {
-                return edge.getDistance();
+
+                return new DistanceValue(edge.getDistance(), edge);
             }
         }
         throw new RuntimeException("Should not happen");
@@ -113,6 +137,14 @@ public class DjikstraCommand implements Command<Vertex> {
         } else {
             return d;
         }
+    }
+
+    public Set<Edge> getFullShortestPathEdges() {
+        return shortestPathEdges;
+    }
+
+    public Set<Vertex> getFullShortestPathVertices() {
+        return unSettledNodes;
     }
 
     /*

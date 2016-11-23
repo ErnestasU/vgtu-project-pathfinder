@@ -1,4 +1,4 @@
-package pathfinder.model;
+package pathfinder.model.graph;
 
 /**
  * @author Ernestas

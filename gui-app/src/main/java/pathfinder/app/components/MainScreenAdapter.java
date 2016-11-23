@@ -24,7 +24,7 @@ import pathfinder.app.attributes.TextureName;
 import pathfinder.app.context.GraphUiContext;
 import pathfinder.app.context.ScreensContextHolder;
 import pathfinder.app.context.UiContext;
-import pathfinder.model.Vertex;
+import pathfinder.model.graph.Vertex;
 
 
 /**

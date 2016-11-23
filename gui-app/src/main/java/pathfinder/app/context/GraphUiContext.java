@@ -2,9 +2,9 @@ package pathfinder.app.context;
 
 import java.util.Set;
 
-import pathfinder.model.Edge;
-import pathfinder.model.Graph;
-import pathfinder.model.Vertex;
+import pathfinder.model.graph.Edge;
+import pathfinder.model.graph.Graph;
+import pathfinder.model.graph.Vertex;
 
 /**
  * @author Ernestas

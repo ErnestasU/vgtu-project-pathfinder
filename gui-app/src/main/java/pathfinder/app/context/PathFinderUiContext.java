@@ -16,9 +16,9 @@ import graph.GraphInitializer;
 import pathfinder.app.attributes.TextureName;
 import pathfinder.app.utils.TextUtils;
 import pathfinder.app.utils.TextureUtils;
-import pathfinder.model.Edge;
-import pathfinder.model.Graph;
-import pathfinder.model.Vertex;
+import pathfinder.model.graph.Edge;
+import pathfinder.model.graph.Graph;
+import pathfinder.model.graph.Vertex;
 
 import static pathfinder.app.constants.GeneralConstant.MAP_DATA_DIR;
 

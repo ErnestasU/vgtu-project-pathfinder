@@ -24,6 +24,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.build.timestamp.format>yyyy-MM-dd_HHmmss</maven.build.timestamp.format>
         <apache.commons>3.5</apache.commons>
+        <apache.commons.collections>3.2.1</apache.commons.collections>
         <google.guava>19.0</google.guava>
         <servlet.api>3.0.1</servlet.api>
         <log4j>1.2.17</log4j>
@@ -31,6 +32,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>${apache.commons.collections}</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
