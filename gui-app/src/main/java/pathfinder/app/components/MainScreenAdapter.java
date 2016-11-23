@@ -16,7 +16,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.I18NBundle;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import command.impl.DjikstraCommand;
 import pathfinder.app.PathFinderScreensManager;
@@ -85,13 +87,14 @@ public class MainScreenAdapter extends ScreenAdapter {
             shapeRenderer.setProjectionMatrix(guiCam.combined);
             shapeRenderer.setColor(Color.RED);
             final GraphUiContext ctx = ScreensContextHolder.get();
-            List<Vertex> shortestPath = DjikstraCommand.ofShortestPath(ctx.getFirstVertex(), ctx.getLastVertex(), ctx.getGraph());
+            Set<Vertex> shortestPath = DjikstraCommand.ofShortestPath(ctx.getFirstVertex(), ctx.getGraph().getLastVertex(), ctx.getGraph());
+            List<Vertex> shortestPathList = new ArrayList<>(shortestPath);
             int x1, x2, y1, y2;
-            for (int i = 0; i < shortestPath.size() - 1 ; i++) {
-                x1 = shortestPath.get(i).getXCoord();
-                y1 = shortestPath.get(i).getYCoord();
-                x2 = shortestPath.get(i + 1).getXCoord();
-                y2 = shortestPath.get(i + 1).getYCoord();
+            for (int i = 0; i < shortestPathList.size() - 1 ; i++) {
+                x1 = shortestPathList.get(i).getXCoord();
+                y1 = shortestPathList.get(i).getYCoord();
+                x2 = shortestPathList.get(i + 1).getXCoord();
+                y2 = shortestPathList.get(i + 1).getYCoord();
                 shapeRenderer.line(x1, y1, x2, y2);
             }
             shapeRenderer.end();

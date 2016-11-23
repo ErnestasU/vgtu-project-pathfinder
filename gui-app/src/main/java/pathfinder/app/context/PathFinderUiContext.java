@@ -1,7 +1,5 @@
 package pathfinder.app.context;
 
-import com.google.common.collect.Iterables;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -75,16 +73,6 @@ public class PathFinderUiContext implements GraphUiContext {
     @Override
     public Set<Edge> getEdges() {
         return graph.getEdges();
-    }
-
-    @Override
-    public Vertex getLastVertex() {
-        return Iterables.getLast(graph.getVertices());
-    }
-
-    @Override
-    public Edge getLastEdge() {
-        return Iterables.getLast(graph.getEdges());
     }
 
     @Override

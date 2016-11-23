@@ -52,7 +52,7 @@ public class DjikstraCommand implements Command<Vertex> {
         this.edges = new LinkedHashSet<>(graph.getEdges());
     }
 
-    public static List<Vertex> ofShortestPath(Vertex rootNode, Vertex currentNode, Graph graph) {
+    public static Set<Vertex> ofShortestPath(Vertex rootNode, Vertex currentNode, Graph graph) {
         DjikstraCommand command = new DjikstraCommand(graph);
         command.execute(rootNode);
         return command.getPath(currentNode);
@@ -139,19 +139,11 @@ public class DjikstraCommand implements Command<Vertex> {
         }
     }
 
-    public Set<Edge> getFullShortestPathEdges() {
-        return shortestPathEdges;
-    }
-
-    public Set<Vertex> getFullShortestPathVertices() {
-        return unSettledNodes;
-    }
-
     /*
      * This method returns the path from the source to the selected target and
      * NULL if no path exists
      */
-    public LinkedList<Vertex> getPath(Vertex target) {
+    public Set<Vertex> getPath(Vertex target) {
         LinkedList<Vertex> path = new LinkedList<Vertex>();
         Vertex step = target;
         // check if a path exists
@@ -165,8 +157,25 @@ public class DjikstraCommand implements Command<Vertex> {
         }
         // Put it into the correct order
         Collections.reverse(path);
-        return path;
+        return new LinkedHashSet(path);
     }
 
+    public Set<Edge> getEdges(Vertex endNode) {
+        return getEdges(getPath(endNode));
+    }
 
+    public Set<Edge> getEdges(Set<Vertex> vertices) {
+        List<Vertex> verticesList = new ArrayList<>(vertices);
+        Set<Edge> result = new LinkedHashSet<>(edges.size());
+        for (int i = 0; i < verticesList.size()-1; i++) {
+            Vertex src = verticesList.get(i);
+            Vertex dst = verticesList.get(i+1);
+            for (Edge edge : edges) {
+                if (edge.getSourceNode().equals(src) && edge.getDestNode().equals(dst)) {
+                    result.add(edge);
+                }
+            }
+        }
+        return result;
+    }
 }

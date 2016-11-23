@@ -12,6 +12,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
             <groupId>pathfinder</groupId>
             <artifactId>model</artifactId>
             <version>${project.version}</version>

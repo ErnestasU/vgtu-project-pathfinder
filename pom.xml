@@ -28,6 +28,7 @@
         <google.guava>19.0</google.guava>
         <servlet.api>3.0.1</servlet.api>
         <log4j>1.2.17</log4j>
+        <junit>4.12</junit>
     </properties>
 
     <dependencyManagement>
@@ -36,6 +37,11 @@
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
                 <version>${apache.commons.collections}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

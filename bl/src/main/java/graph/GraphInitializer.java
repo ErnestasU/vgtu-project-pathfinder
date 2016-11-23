@@ -12,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -118,8 +117,7 @@ public class GraphInitializer {
         BasicConfigurator.configure();
         Graph graph = new GraphInitializer().initialize();
         Vertex head = graph.getVertices().iterator().next();
-        Vertex last = Iterables.getLast(graph.getVertices());
-        List<Vertex> result = DjikstraCommand.ofShortestPath(head, last, graph);
+        Set<Vertex> result = DjikstraCommand.ofShortestPath(head, graph.getLastVertex(), graph);
         LOGGER.debug("RESULT: \n");
         LOGGER.debug(result.stream().map(Vertex::toString).collect(Collectors.joining(",")));
     }

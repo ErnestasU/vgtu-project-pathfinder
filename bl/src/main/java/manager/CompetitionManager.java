@@ -30,23 +30,24 @@ public class CompetitionManager {
         Vertex root = Iterables.getLast(completedPath);
         DjikstraCommand command = new DjikstraCommand(graph);
         command.execute(root);
-        CaloriesCalculator caloriesCalculator = new CaloriesCalculator(command.getFullShortestPathEdges());
+        Set<Vertex> verticesToComplete = command.getPath(graph.getLastVertex());
+        Set<Edge> edgesToComplete = command.getEdges(verticesToComplete);
+        CaloriesCalculator caloriesCalculator = new CaloriesCalculator(edgesToComplete);
         final int caloriesToExaust = caloriesCalculator.calculate();
-        return new CompetitorSummary(command.getFullShortestPathVertices(), caloriesToExaust);
+        return new CompetitorSummary(command.getPath(graph.getLastVertex()), caloriesToExaust);
     }
 
     public CompetitionResult compete(CompetitorSummary againstCompetitor) {
         final DjikstraCommand command = new DjikstraCommand(graph);
         command.execute(graph.getVertices().iterator().next());
-        final Set<Edge> shortPathToComplete = command.getFullShortestPathEdges();
-        CaloriesCalculator caloriesCalculator = new CaloriesCalculator(shortPathToComplete);
+        CaloriesCalculator caloriesCalculator = new CaloriesCalculator(command.getEdges(graph.getLastVertex()));
         final int caloriesToExaust  = caloriesCalculator.calculate();
         final int caloriesToCompete = againstCompetitor.getCaloriesToExaust();
 
         if (caloriesToCompete < caloriesToExaust) {
-            return new CompetitionLostResult(caloriesToExaust, caloriesToExaust - caloriesToCompete);
+            return new CompetitionLostResult(caloriesToExaust - caloriesToCompete, caloriesToExaust);
         }
-        return new CompetitionWinResult(command.getFullShortestPathVertices(), caloriesToExaust);
+        return new CompetitionWinResult(command.getPath(graph.getLastVertex()), caloriesToExaust);
 
     }
 }

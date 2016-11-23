@@ -1,5 +1,7 @@
 package pathfinder.model.graph;
 
+import com.google.common.collect.Iterables;
+
 import java.util.Set;
 
 /**
@@ -10,9 +12,14 @@ public class Graph {
     private Set<Vertex> vertices;
     private Set<Edge> edges;
 
+    private Edge lastEdge;
+    private Vertex lastVertex;
+
     public Graph(Set<Vertex> vertices, Set<Edge> edges) {
         this.vertices = vertices;
         this.edges = edges;
+        this.lastEdge = Iterables.getLast(edges);
+        this.lastVertex = Iterables.getLast(vertices);
     }
 
     public Set<Vertex> getVertices() {
@@ -21,6 +28,14 @@ public class Graph {
 
     public Set<Edge> getEdges() {
         return edges;
+    }
+
+    public Edge getLastEdge() {
+        return lastEdge;
+    }
+
+    public Vertex getLastVertex() {
+        return lastVertex;
     }
 
     @Override

@@ -7,11 +7,12 @@ package pathfinder.model.graph;
 public enum EdgeAttribute {
 
     RAINY(0.1f),
-    SNOWY(0.1f),
+    SNOWY(0.2f),
     WINDY(0.1f),
     HIGHTEMP(0.1f),
-    OFFROAD(0.1f),
-    MOUNTAINOUS(0.1f);
+    OFFROAD(0.2f),
+    MOUNTAINOUS(0.1f),
+    HIGHTRAFFIC(0.2f);
 
     float factor;
     EdgeAttribute(float factor) {
