@@ -24,7 +24,7 @@ public class CaloriesCalculator {
             int dist = edge.getDistance() * 100;
             if (edge instanceof FeaturedEdge) {
                 FeaturedEdge featuredEdge = (FeaturedEdge)edge;
-                int factor = 1;
+                float factor = 1;
                 for (EdgeAttribute attr: featuredEdge.getAttributes()) {
                     factor += attr.getFactor();
                 }

@@ -18,10 +18,6 @@ public interface GraphUiContext extends UiContext, PropsUiContext {
 
     Set<Edge> getEdges();
 
-    Vertex getLastVertex();
-
-    Edge getLastEdge();
-
     Vertex getFirstVertex();
 
     Edge getFirstEdge();

@@ -17,7 +17,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.I18NBundle;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import command.impl.DjikstraCommand;
 import pathfinder.app.PathFinderScreensManager;
@@ -26,6 +28,8 @@ import pathfinder.app.context.GraphUiContext;
 import pathfinder.app.context.ScreensContextHolder;
 import pathfinder.app.context.UiContext;
 import pathfinder.model.graph.Vertex;
+
+import static javax.swing.text.html.HTML.Tag.HEAD;
 
 
 /**
@@ -83,27 +87,6 @@ public class MainScreenAdapter extends ScreenAdapter {
         pathFinderScreensManager.getBatcher().draw(context.getTextureRegionByName(TextureName.PATHMAP), 11, 11, 655, 542);
         pathFinderScreensManager.getBatcher().end();
 
-        /*for (Vertex node : ctx.getVertices()) {
-            Texture texture;
-            if (node.getId().equals(ctx.getGraph().getStartPointId())) {
-                texture = new Texture(Gdx.files.internal("radio_button_green.png"));
-            } else {
-                texture = new Texture(Gdx.files.internal("radio_button_red.png"));
-            }
-            TextureRegion textureRegion = new TextureRegion(texture);
-            TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureRegion);
-            final ImageButton imageButton = new ImageButton(textureRegionDrawable);
-            imageButton.setSize(28, 28);
-            imageButton.setPosition(node.getXCoord(), node.getYCoord());
-            imageButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    ctx.getGraph().setStartPointId(node.getId());
-                }
-            });
-            stage.addActor(imageButton);
-        }*/
-
         for (NodeImageButton nodeImageButton : node.getNodes()){
             stage.addActor(nodeImageButton.getImageButton());
         }
@@ -112,18 +95,19 @@ public class MainScreenAdapter extends ScreenAdapter {
         if (drawPath) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.RED);
-            List<Vertex> shortestPath = DjikstraCommand.ofShortestPath(ctx.getFirstVertex(), ctx.getLastVertex(), ctx.getGraph());
+            final GraphUiContext ctx = ScreensContextHolder.get();
+            Set<Vertex> shortestPath = DjikstraCommand.getShortestPath(ctx.getFirstVertex(), ctx.getGraph().getLastVertex(), ctx.getGraph());
+            List<Vertex> shortestPathList = new ArrayList<>(shortestPath);
             int x1, x2, y1, y2;
-            for (int i = 0; i < shortestPath.size() - 1 ; i++) {
-                x1 = shortestPath.get(i).getXCoord();
-                y1 = shortestPath.get(i).getYCoord();
-                x2 = shortestPath.get(i + 1).getXCoord();
-                y2 = shortestPath.get(i + 1).getYCoord();
+            for (int i = 0; i < shortestPathList.size() - 1 ; i++) {
+                x1 = shortestPathList.get(i).getXCoord();
+                y1 = shortestPathList.get(i).getYCoord();
+                x2 = shortestPathList.get(i + 1).getXCoord();
+                y2 = shortestPathList.get(i + 1).getYCoord();
                 shapeRenderer.line(x1+11, y1+11, x2+11, y2+11);
             }
             shapeRenderer.end();
         }
-
     }
 
     @Override
@@ -137,7 +121,6 @@ public class MainScreenAdapter extends ScreenAdapter {
         Gdx.input.setInputProcessor(stage);
 
     }
-
 
     private Skin anotherSkin(){
         // A skin can be loaded via JSON or defined programmatically, either is fine. Using a skin is optional but strongly

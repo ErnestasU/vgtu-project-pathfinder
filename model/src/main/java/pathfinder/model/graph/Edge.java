@@ -8,6 +8,8 @@ import java.util.Objects;
  */
 public class Edge {
 
+    public static final String ID_FORMAT = "%s_%s";
+
     private String id;
     private Vertex source;
     private Vertex destination;
@@ -17,7 +19,7 @@ public class Edge {
         this.source = source;
         this.destination = destination;
         this.distance = weight;
-        this.id = source.getId() + "_" + destination.getId();
+        this.id = String.format(ID_FORMAT, source.getId(),destination.getId());
     }
 
     public String getId() {
