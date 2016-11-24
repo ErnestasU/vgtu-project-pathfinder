@@ -43,7 +43,6 @@ public class DjikstraCommand implements Command<Vertex> {
     private Set<Vertex> settledNodes;
     private Set<Vertex> unSettledNodes;
     private Map<Vertex, Vertex> predecessors;
-    private Set<Edge> shortestPathEdges = new LinkedHashSet<>();
     private Map<Vertex, Integer> distance;
 
     public DjikstraCommand(Graph graph) {
@@ -78,24 +77,20 @@ public class DjikstraCommand implements Command<Vertex> {
         for (Vertex target : adjacentNodes) {
             int currentShortestDist = getShortestDistance(target);
             int nodeDist = getShortestDistance(node);
-            final DistanceValue distanceVal = getDistance(node, target);
-            int distNodeBetweenTarget = distanceVal.getDistanceNodeBetweenTarget();
+            int distNodeBetweenTarget = getDistance(node, target);
             if (currentShortestDist > (nodeDist + distNodeBetweenTarget)) {
                 distance.put(target, (nodeDist + distNodeBetweenTarget));
                 predecessors.put(target, node);
-                shortestPathEdges.add(distanceVal.getEdgeToBelong());
                 unSettledNodes.add(target);
             }
         }
 
     }
 
-    private DistanceValue getDistance(Vertex node, Vertex target) {
+    private int getDistance(Vertex node, Vertex target) {
         for (Edge edge : edges) {
-            if (edge.getSourceNode().equals(node)
-                    && edge.getDestNode().equals(target)) {
-
-                return new DistanceValue(edge.getDistance(), edge);
+            if (edge.getSourceNode().equals(node) && edge.getDestNode().equals(target)) {
+                return edge.getDistance();
             }
         }
         throw new RuntimeException("Should not happen");

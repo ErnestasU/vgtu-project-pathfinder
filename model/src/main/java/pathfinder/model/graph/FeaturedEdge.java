@@ -23,6 +23,15 @@ public class FeaturedEdge extends Edge {
         return attributes;
     }
 
+    public int getDistance() {
+        int current = super.getDistance();
+        float factor = 1;
+        for (EdgeAttribute attr: getAttributes()) {
+            factor += attr.getFactor();
+        }
+        return (current *= factor);
+    }
+
     @Override
     public String toString() {
         return super.toString() + " \n FeaturedEdge{" +
