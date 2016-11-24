@@ -9,6 +9,7 @@ public class Graph {
 
     private Set<Vertex> vertices;
     private Set<Edge> edges;
+    private String startPointId;
 
     public Graph(Set<Vertex> vertices, Set<Edge> edges) {
         this.vertices = vertices;
@@ -21,6 +22,14 @@ public class Graph {
 
     public Set<Edge> getEdges() {
         return edges;
+    }
+
+    public String getStartPointId() {
+        return startPointId;
+    }
+
+    public void setStartPointId(String startPointId) {
+        this.startPointId = startPointId;
     }
 
     @Override
