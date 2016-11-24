@@ -87,7 +87,7 @@ public class MainScreenAdapter extends ScreenAdapter {
             shapeRenderer.setProjectionMatrix(guiCam.combined);
             shapeRenderer.setColor(Color.RED);
             final GraphUiContext ctx = ScreensContextHolder.get();
-            Set<Vertex> shortestPath = DjikstraCommand.ofShortestPath(ctx.getFirstVertex(), ctx.getGraph().getLastVertex(), ctx.getGraph());
+            Set<Vertex> shortestPath = DjikstraCommand.getShortestPath(ctx.getFirstVertex(), ctx.getGraph().getLastVertex(), ctx.getGraph());
             List<Vertex> shortestPathList = new ArrayList<>(shortestPath);
             int x1, x2, y1, y2;
             for (int i = 0; i < shortestPathList.size() - 1 ; i++) {

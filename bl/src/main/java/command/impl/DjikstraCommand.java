@@ -52,7 +52,7 @@ public class DjikstraCommand implements Command<Vertex> {
         this.edges = new LinkedHashSet<>(graph.getEdges());
     }
 
-    public static Set<Vertex> ofShortestPath(Vertex rootNode, Vertex currentNode, Graph graph) {
+    public static Set<Vertex> getShortestPath(Vertex rootNode, Vertex currentNode, Graph graph) {
         DjikstraCommand command = new DjikstraCommand(graph);
         command.execute(rootNode);
         return command.getPath(currentNode);
