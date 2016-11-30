@@ -8,9 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -38,18 +36,23 @@ public class MainScreenAdapter extends ScreenAdapter {
     private PathFinderScreensManager pathFinderScreensManager;
     private Stage stage;
     private ShapeRenderer shapeRenderer;
+
     private GraphUiContext ctx;
-    private boolean drawPath;
     private Node node;
     private EdgeAttributeDrawable edgeAttributeDrawable;
-    private String selected;
-    private boolean drawSelectedEdge;
     private Array<String> selectBoxItems;
+
+    private String selected;
+    private String firstNode;
+    private String lastNode;
+    private boolean drawPath;
+    private boolean drawSelectedEdge;
 
     private TextButton buttonCalc;
     private TextButton buttonClear;
     private SelectBox<String> selectBox;
     private CheckBox checkBoxDrawSelected;
+    private Label infoLabel;
 
     public MainScreenAdapter(PathFinderScreensManager pathFinderScreensManager) {
         this.pathFinderScreensManager = pathFinderScreensManager;
@@ -57,6 +60,10 @@ public class MainScreenAdapter extends ScreenAdapter {
         shapeRenderer = new ShapeRenderer();
         ctx = ScreensContextHolder.get();
         node = new Node();
+
+        firstNode = node.getNodes().get(0).getNodeId();
+        lastNode = node.getNodes().get(node.getNodes().size()-1).getNodeId();
+
         edgeAttributeDrawable = new EdgeAttributeDrawable();
         selectBoxItems = new Array<>();
         for (Edge edge : ctx.getEdges()) {
@@ -121,6 +128,10 @@ public class MainScreenAdapter extends ScreenAdapter {
         if (drawSelectedEdge) {
             edgeAttributeDrawable.drawSelectedEdge(shapeRenderer);
         }
+
+        //show info label
+        stage.addActor(infoLabel);
+
     }
 
     @Override
@@ -142,7 +153,10 @@ public class MainScreenAdapter extends ScreenAdapter {
         buttonCalc.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                drawPath = true;
+                String startPointId = ctx.getGraph().getStartPointId();
+                if (!(startPointId == null || startPointId.equals(firstNode) || startPointId.equals(lastNode))) {
+                    drawPath = true;
+                }
             }
         });
 
@@ -183,6 +197,11 @@ public class MainScreenAdapter extends ScreenAdapter {
                 checkBoxDrawSelected.setChecked(drawSelectedEdge);
             }
         });
+
+        String text = "Prasome pasirinkti antro dviratininko pradzios vieta (Negalima rinktis " + firstNode + " ir " + lastNode + ")";
+        infoLabel = new Label(text, ctx.getSkin());
+        infoLabel.setColor(Color.WHITE);
+        infoLabel.setPosition(11, 600);
     }
 
 }

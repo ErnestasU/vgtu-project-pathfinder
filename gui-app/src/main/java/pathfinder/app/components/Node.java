@@ -21,6 +21,8 @@ public class Node {
 
     private List<NodeImageButton> nodes;
     private GraphUiContext ctx;
+    private String firstNode;
+    private String lastNode;
 
     private ImageButton getPointButton(String nodeId, int x, int y){
         ImageButton button = new ImageButton(getRadioButtonRed());
@@ -29,15 +31,18 @@ public class Node {
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ImageButton oldButton = getImageButtonById(ctx.getGraph().getStartPointId());
-                if (oldButton != null) {
-                    oldButton.getStyle().imageUp = getRadioButtonRed();
+                if (!(nodeId.equals(firstNode) || nodeId.equals(lastNode))) {
+                    ImageButton oldButton = getImageButtonById(ctx.getGraph().getStartPointId());
+                    if (oldButton != null) {
+                        oldButton.getStyle().imageUp = getRadioButtonRed();
+                    }
+                    ctx.getGraph().setStartPointId(nodeId);
+                    ImageButton newButton = getImageButtonById(ctx.getGraph().getStartPointId());
+                    newButton.getStyle().imageUp = getRadioButtonGreen();
                 }
-                ctx.getGraph().setStartPointId(nodeId);
-                ImageButton newButton = getImageButtonById(ctx.getGraph().getStartPointId());
-                newButton.getStyle().imageUp = getRadioButtonGreen();
             }
         });
+        button.toBack();
         return button;
     }
 
@@ -62,12 +67,14 @@ public class Node {
                         new Texture(Gdx.files.internal("radio_button_green.png"))));
     };
 
-    Node() {
+    public Node() {
         ctx = ScreensContextHolder.get();
         nodes = new ArrayList<>();
         for (Vertex node : ScreensContextHolder.get().getVertices()) {
             nodes.add(new NodeImageButton(node.getId(), getPointButton(node.getId(), node.getXCoord(), node.getYCoord())));
         }
+        firstNode = nodes.get(0).getNodeId();
+        lastNode = nodes.get(nodes.size()-1).getNodeId();
     }
 
     public List<NodeImageButton> getNodes() {

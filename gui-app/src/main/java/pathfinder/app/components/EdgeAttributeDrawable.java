@@ -106,7 +106,7 @@ public class EdgeAttributeDrawable {
         }
     }
 
-    EdgeAttributeDrawable() {
+    public EdgeAttributeDrawable() {
         this.attributes = new ArrayList<>();
         ctx = ScreensContextHolder.get();
         for (EdgeAttribute edgeAttribute : ctx.getAttributes()) {
