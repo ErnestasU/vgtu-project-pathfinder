@@ -75,6 +75,11 @@ public class PathFinderUiContext implements GraphUiContext {
     }
 
     @Override
+    public void setEdges(Set<Edge> edgeSet) {
+        graph.setEdges(edgeSet);
+    }
+
+    @Override
     public Vertex getFirstVertex() {
         return graph.getVertices().iterator().next();
     }

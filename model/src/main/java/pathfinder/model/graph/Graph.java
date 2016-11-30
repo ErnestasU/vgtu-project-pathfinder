@@ -29,6 +29,10 @@ public class Graph {
         return edges;
     }
 
+    public void setEdges(Set<Edge> edgeSet) {
+        this.edges = edgeSet;
+    }
+
     public String getStartPointId() {
         return startPointId;
     }

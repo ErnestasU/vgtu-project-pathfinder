@@ -14,8 +14,7 @@ import pathfinder.model.graph.Edge;
 import pathfinder.model.graph.EdgeAttribute;
 import pathfinder.model.graph.FeaturedEdge;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by TT on 2016-11-30.
@@ -47,7 +46,28 @@ public class EdgeAttributeDrawable {
                                 FeaturedEdge featuredEdge = (FeaturedEdge) edge;
                                 featuredEdge.getAttributes().add(getEdgeAttribute(name));
                             } catch (ClassCastException e) {
-                                // create FeaturedEdge?
+                                Set<EdgeAttribute> edgeAttributeSet = new HashSet<EdgeAttribute>();
+                                edgeAttributeSet.add(getEdgeAttribute(name));
+                                FeaturedEdge newFeaturedEdge = new FeaturedEdge(edge.getSourceNode(),
+                                                        edge.getDestNode(),
+                                                        edge.getDistance()).ofAttributes(edgeAttributeSet);
+
+                                List<Edge> list = new ArrayList<Edge>();
+                                list.addAll(ctx.getEdges());
+                                Iterator<Edge> iterator = list.iterator();
+                                int index = 0;
+                                while(iterator.hasNext()){
+                                    Edge ed = iterator.next();
+                                    if (ed.getId().equals(selected)){
+                                        iterator.remove();
+                                        break;
+                                    }
+                                    index++;
+                                }
+                                list.add(index, newFeaturedEdge);
+                                Set<Edge> newEdgeSet = new LinkedHashSet<Edge>();
+                                newEdgeSet.addAll(list);
+                                ctx.setEdges(newEdgeSet);
                             }
                         }
                     }
