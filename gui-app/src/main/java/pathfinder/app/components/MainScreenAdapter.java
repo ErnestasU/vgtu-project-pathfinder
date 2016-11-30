@@ -4,32 +4,31 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.I18NBundle;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import command.impl.DjikstraCommand;
 import pathfinder.app.PathFinderScreensManager;
 import pathfinder.app.attributes.TextureName;
 import pathfinder.app.context.GraphUiContext;
 import pathfinder.app.context.ScreensContextHolder;
 import pathfinder.app.context.UiContext;
+import pathfinder.model.graph.Edge;
 import pathfinder.model.graph.Vertex;
 
-import static javax.swing.text.html.HTML.Tag.HEAD;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -43,14 +42,23 @@ public class MainScreenAdapter extends ScreenAdapter {
     private ShapeRenderer shapeRenderer;
     private GraphUiContext ctx;
     private boolean drawPath;
-    private boolean add = true;
     private Node node;
+    private EdgeAttributeDrawable edgeAttributeDrawable;
+    private String selected;
+    private boolean drawSelectedEdge;
+    private Array<String> selectBoxItems;
     public MainScreenAdapter(PathFinderScreensManager pathFinderScreensManager) {
         this.pathFinderScreensManager = pathFinderScreensManager;
         stage = new Stage();
         shapeRenderer = new ShapeRenderer();
         ctx = ScreensContextHolder.get();
         node = new Node();
+        edgeAttributeDrawable = new EdgeAttributeDrawable();
+        selectBoxItems = new Array<>();
+        for (Edge edge : ctx.getEdges()) {
+            selectBoxItems.add(edge.getId());
+        }
+        selected = selectBoxItems.first();
     }
 
     public void draw () {
@@ -60,8 +68,10 @@ public class MainScreenAdapter extends ScreenAdapter {
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         gl.glLineWidth(6);
         I18NBundle props = ScreensContextHolder.get().getUiProps();
-        TextButton buttonCalc = new TextButton(props.get("button.calculate"), anotherSkin());
+
+        final TextButton buttonCalc = new TextButton(props.get("button.calculate"), getSkin());
         buttonCalc.setPosition(11, 658);
+        buttonCalc.setSize(310, 60);
         buttonCalc.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -70,8 +80,9 @@ public class MainScreenAdapter extends ScreenAdapter {
         });
         stage.addActor(buttonCalc);
 
-        TextButton buttonClear = new TextButton(props.get("button.clear"), anotherSkin());
-        buttonClear.setPosition(340, 658);
+        final TextButton buttonClear = new TextButton(props.get("button.clear"), getSkin());
+        buttonClear.setPosition(330, 658);
+        buttonClear.setSize(310, 60);
         buttonClear.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -82,6 +93,36 @@ public class MainScreenAdapter extends ScreenAdapter {
         });
         stage.addActor(buttonClear);
 
+        final SelectBox<String> selectBox = new SelectBox<String>(getSkin());
+        selectBox.setPosition(660, 658);
+        selectBox.setSize(200, 60);
+        selectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                selected = selectBox.getSelected();
+            }
+        });
+        selectBox.setItems(selectBoxItems);
+        selectBox.setSelected(selected);
+        edgeAttributeDrawable.setSelected(selected);
+        stage.addActor(selectBox);
+
+        final CheckBox checkBoxDrawSelected = new CheckBox(props.get("checkBox.drawSelected"), getSkin());
+        checkBoxDrawSelected.setPosition(880, 675);;
+        checkBoxDrawSelected.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                drawSelectedEdge = checkBoxDrawSelected.isChecked();
+            }
+        });
+        checkBoxDrawSelected.setChecked(drawSelectedEdge);
+        stage.addActor(checkBoxDrawSelected);
+
+        edgeAttributeDrawable.refresh();
+        for (CheckBox edgeAttribute : edgeAttributeDrawable.getAttributes()){
+            stage.addActor(edgeAttribute);
+        }
+
         pathFinderScreensManager.getBatcher().enableBlending();
         pathFinderScreensManager.getBatcher().begin();
         pathFinderScreensManager.getBatcher().draw(context.getTextureRegionByName(TextureName.PATHMAP), 11, 11, 655, 542);
@@ -90,6 +131,8 @@ public class MainScreenAdapter extends ScreenAdapter {
         for (NodeImageButton nodeImageButton : node.getNodes()){
             stage.addActor(nodeImageButton.getImageButton());
         }
+
+        stage.act();
         stage.draw();
 
         if (drawPath) {
@@ -108,6 +151,11 @@ public class MainScreenAdapter extends ScreenAdapter {
             }
             shapeRenderer.end();
         }
+
+        //draw selected edge
+        if (drawSelectedEdge) {
+            edgeAttributeDrawable.drawSelectedEdge(shapeRenderer);
+        }
     }
 
     @Override
@@ -117,38 +165,11 @@ public class MainScreenAdapter extends ScreenAdapter {
 
     @Override
     public void show(){
-
         Gdx.input.setInputProcessor(stage);
-
     }
 
-    private Skin anotherSkin(){
-        // A skin can be loaded via JSON or defined programmatically, either is fine. Using a skin is optional but strongly
-        // recommended solely for the convenience of getting a texture, region, etc as a drawable, tinted drawable, etc.
-        Skin skin = new Skin();
-        // Generate a 1x1 white texture and store it in the skin named "white".
-        Pixmap pixmap = new Pixmap(323, 100, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.BLACK);
-        pixmap.fill();
-
-        skin.add("white", new Texture(pixmap));
-
-        // Store the default libgdx font under the name "default".
-        BitmapFont bfont=new BitmapFont();
-        bfont.scale(1);
-        skin.add("default",bfont);
-
-        // Configure a TextButtonStyle and name it "default". Skin resources are stored by type, so this doesn't overwrite the font.
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
-        textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
-        textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
-        textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
-
-        textButtonStyle.font = skin.getFont("default");
-        skin.add("default", textButtonStyle);
-
-        return skin;
+    private Skin getSkin() {
+        return new Skin(Gdx.files.internal("uiskin.json"), new TextureAtlas(Gdx.files.internal("uiskin.atlas")));
     }
 
 }

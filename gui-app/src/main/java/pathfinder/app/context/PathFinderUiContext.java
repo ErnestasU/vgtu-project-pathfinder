@@ -4,19 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.I18NBundle;
-
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import graph.GraphInitializer;
 import pathfinder.app.attributes.TextureName;
 import pathfinder.app.utils.TextUtils;
 import pathfinder.app.utils.TextureUtils;
 import pathfinder.model.graph.Edge;
+import pathfinder.model.graph.EdgeAttribute;
 import pathfinder.model.graph.Graph;
 import pathfinder.model.graph.Vertex;
+
+import java.util.*;
 
 import static pathfinder.app.constants.GeneralConstant.MAP_DATA_DIR;
 
@@ -29,6 +26,7 @@ public class PathFinderUiContext implements GraphUiContext {
     private Map<TextureName, TextureRegion> texturesRegions = new HashMap<>();
     private Graph graph;
     private I18NBundle uiProps;
+    private ArrayList<EdgeAttribute> attributes;
 
     private boolean created = false;
 
@@ -51,6 +49,7 @@ public class PathFinderUiContext implements GraphUiContext {
         FileHandle baseFileHandle = Gdx.files.internal("localization");
         context.uiProps = I18NBundle.createBundle(baseFileHandle, Locale.getDefault());
         context.initTextures();
+        context.attributes = new ArrayList<>(Arrays.asList(EdgeAttribute.values()));
     }
 
     private void initTextures() {
@@ -89,4 +88,7 @@ public class PathFinderUiContext implements GraphUiContext {
     public I18NBundle getUiProps() {
         return uiProps;
     }
+
+    @Override
+    public ArrayList<EdgeAttribute> getAttributes() { return attributes;}
 }

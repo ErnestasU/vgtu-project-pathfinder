@@ -1,10 +1,12 @@
 package pathfinder.app.context;
 
-import java.util.Set;
-
 import pathfinder.model.graph.Edge;
+import pathfinder.model.graph.EdgeAttribute;
 import pathfinder.model.graph.Graph;
 import pathfinder.model.graph.Vertex;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * @author Ernestas
@@ -21,4 +23,6 @@ public interface GraphUiContext extends UiContext, PropsUiContext {
     Vertex getFirstVertex();
 
     Edge getFirstEdge();
+
+    ArrayList<EdgeAttribute> getAttributes();
 }
