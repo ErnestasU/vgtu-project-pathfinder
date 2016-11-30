@@ -2,7 +2,9 @@ package pathfinder.app.context;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.I18NBundle;
 import graph.GraphInitializer;
 import pathfinder.app.attributes.TextureName;
@@ -27,6 +29,7 @@ public class PathFinderUiContext implements GraphUiContext {
     private Graph graph;
     private I18NBundle uiProps;
     private ArrayList<EdgeAttribute> attributes;
+    private Skin skin;
 
     private boolean created = false;
 
@@ -50,6 +53,7 @@ public class PathFinderUiContext implements GraphUiContext {
         context.uiProps = I18NBundle.createBundle(baseFileHandle, Locale.getDefault());
         context.initTextures();
         context.attributes = new ArrayList<>(Arrays.asList(EdgeAttribute.values()));
+        context.skin = new Skin(Gdx.files.internal("uiskin.json"), new TextureAtlas(Gdx.files.internal("uiskin.atlas")));
     }
 
     private void initTextures() {
@@ -96,4 +100,9 @@ public class PathFinderUiContext implements GraphUiContext {
 
     @Override
     public ArrayList<EdgeAttribute> getAttributes() { return attributes;}
+
+    @Override
+    public Skin getSkin() {
+        return skin;
+    }
 }

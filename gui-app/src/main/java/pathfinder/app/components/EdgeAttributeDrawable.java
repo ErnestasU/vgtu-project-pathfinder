@@ -1,12 +1,9 @@
 package pathfinder.app.components;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import pathfinder.app.context.GraphUiContext;
 import pathfinder.app.context.ScreensContextHolder;
@@ -31,7 +28,7 @@ public class EdgeAttributeDrawable {
     private String selected = "";
 
     private CheckBox getNewCheckBox(String name, EdgeAttribute edgeAttribute){
-        CheckBox attribute = new CheckBox(name, getSkin());
+        CheckBox attribute = new CheckBox(name, ctx.getSkin());
         attribute.setPosition(880, coordY);
         attribute.setChecked(false);
         attribute.addListener(new ClickListener() {
@@ -101,10 +98,6 @@ public class EdgeAttributeDrawable {
             }
         }
         return null;
-    }
-
-    private Skin getSkin() {
-        return new Skin(Gdx.files.internal("uiskin.json"), new TextureAtlas(Gdx.files.internal("uiskin.atlas")));
     }
 
     private void unCheckAll() {

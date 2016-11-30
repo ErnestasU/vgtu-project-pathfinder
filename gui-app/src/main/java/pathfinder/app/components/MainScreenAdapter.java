@@ -4,14 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -47,6 +45,12 @@ public class MainScreenAdapter extends ScreenAdapter {
     private String selected;
     private boolean drawSelectedEdge;
     private Array<String> selectBoxItems;
+
+    private TextButton buttonCalc;
+    private TextButton buttonClear;
+    private SelectBox<String> selectBox;
+    private CheckBox checkBoxDrawSelected;
+
     public MainScreenAdapter(PathFinderScreensManager pathFinderScreensManager) {
         this.pathFinderScreensManager = pathFinderScreensManager;
         stage = new Stage();
@@ -59,6 +63,7 @@ public class MainScreenAdapter extends ScreenAdapter {
             selectBoxItems.add(edge.getId());
         }
         selected = selectBoxItems.first();
+        initButtons();
     }
 
     public void draw () {
@@ -67,67 +72,26 @@ public class MainScreenAdapter extends ScreenAdapter {
         gl.glClearColor(138/255f, 138/255f, 92/255f, 0);
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         gl.glLineWidth(6);
-        I18NBundle props = ScreensContextHolder.get().getUiProps();
 
-        final TextButton buttonCalc = new TextButton(props.get("button.calculate"), getSkin());
-        buttonCalc.setPosition(11, 658);
-        buttonCalc.setSize(310, 60);
-        buttonCalc.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                drawPath = true;
-            }
-        });
+        // add buttons
         stage.addActor(buttonCalc);
-
-        final TextButton buttonClear = new TextButton(props.get("button.clear"), getSkin());
-        buttonClear.setPosition(330, 658);
-        buttonClear.setSize(310, 60);
-        buttonClear.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                drawPath = false;
-                node.clear();
-                ctx.getGraph().setStartPointId(null);
-            }
-        });
         stage.addActor(buttonClear);
-
-        final SelectBox<String> selectBox = new SelectBox<String>(getSkin());
-        selectBox.setPosition(660, 658);
-        selectBox.setSize(200, 60);
-        selectBox.addListener(new ChangeListener() {
-            @Override
-            public void changed (ChangeEvent event, Actor actor) {
-                selected = selectBox.getSelected();
-            }
-        });
-        selectBox.setItems(selectBoxItems);
-        selectBox.setSelected(selected);
-        edgeAttributeDrawable.setSelected(selected);
         stage.addActor(selectBox);
-
-        final CheckBox checkBoxDrawSelected = new CheckBox(props.get("checkBox.drawSelected"), getSkin());
-        checkBoxDrawSelected.setPosition(880, 675);;
-        checkBoxDrawSelected.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                drawSelectedEdge = checkBoxDrawSelected.isChecked();
-            }
-        });
-        checkBoxDrawSelected.setChecked(drawSelectedEdge);
         stage.addActor(checkBoxDrawSelected);
 
-        edgeAttributeDrawable.refresh();
+        // add edge attributes
         for (CheckBox edgeAttribute : edgeAttributeDrawable.getAttributes()){
             stage.addActor(edgeAttribute);
         }
 
+        //draw map
         pathFinderScreensManager.getBatcher().enableBlending();
         pathFinderScreensManager.getBatcher().begin();
         pathFinderScreensManager.getBatcher().draw(context.getTextureRegionByName(TextureName.PATHMAP), 11, 11, 655, 542);
         pathFinderScreensManager.getBatcher().end();
 
+
+        //add nodes to map
         for (NodeImageButton nodeImageButton : node.getNodes()){
             stage.addActor(nodeImageButton.getImageButton());
         }
@@ -135,6 +99,7 @@ public class MainScreenAdapter extends ScreenAdapter {
         stage.act();
         stage.draw();
 
+        //draw results
         if (drawPath) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.RED);
@@ -168,8 +133,56 @@ public class MainScreenAdapter extends ScreenAdapter {
         Gdx.input.setInputProcessor(stage);
     }
 
-    private Skin getSkin() {
-        return new Skin(Gdx.files.internal("uiskin.json"), new TextureAtlas(Gdx.files.internal("uiskin.atlas")));
+    private void initButtons() {
+        I18NBundle props = ScreensContextHolder.get().getUiProps();
+
+        buttonCalc = new TextButton(props.get("button.calculate"), ctx.getSkin());
+        buttonCalc.setPosition(11, 658);
+        buttonCalc.setSize(310, 60);
+        buttonCalc.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                drawPath = true;
+            }
+        });
+
+        buttonClear = new TextButton(props.get("button.clear"), ctx.getSkin());
+        buttonClear.setPosition(330, 658);
+        buttonClear.setSize(310, 60);
+        buttonClear.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                drawPath = false;
+                node.clear();
+                ctx.getGraph().setStartPointId(null);
+            }
+        });
+
+        selectBox = new SelectBox<String>(ctx.getSkin());
+        selectBox.setPosition(660, 658);
+        selectBox.setSize(200, 60);
+        selectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                selected = selectBox.getSelected();
+                edgeAttributeDrawable.setSelected(selected);
+                edgeAttributeDrawable.refresh();
+            }
+        });
+        selectBox.setItems(selectBoxItems);
+        selectBox.setSelected(selected);
+        edgeAttributeDrawable.setSelected(selected);
+        edgeAttributeDrawable.refresh();
+
+        checkBoxDrawSelected = new CheckBox(props.get("checkBox.drawSelected"), ctx.getSkin());
+        checkBoxDrawSelected.setPosition(880, 675);;
+        checkBoxDrawSelected.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                drawSelectedEdge = checkBoxDrawSelected.isChecked();
+                checkBoxDrawSelected.setChecked(drawSelectedEdge);
+            }
+        });
     }
 
 }

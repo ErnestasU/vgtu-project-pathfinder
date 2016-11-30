@@ -1,5 +1,6 @@
 package pathfinder.app.context;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import pathfinder.model.graph.Edge;
 import pathfinder.model.graph.EdgeAttribute;
 import pathfinder.model.graph.Graph;
@@ -27,4 +28,6 @@ public interface GraphUiContext extends UiContext, PropsUiContext {
     Edge getFirstEdge();
 
     ArrayList<EdgeAttribute> getAttributes();
+
+    Skin getSkin();
 }
