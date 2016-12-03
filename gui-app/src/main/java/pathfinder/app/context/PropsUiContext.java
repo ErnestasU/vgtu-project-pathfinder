@@ -1,6 +1,6 @@
 package pathfinder.app.context;
 
-import com.badlogic.gdx.utils.I18NBundle;
+import java.util.ResourceBundle;
 
 /**
  * @author Ernestas
@@ -8,5 +8,5 @@ import com.badlogic.gdx.utils.I18NBundle;
  */
 public interface PropsUiContext {
 
-    I18NBundle getUiProps();
+    ResourceBundle getUiProps();
 }

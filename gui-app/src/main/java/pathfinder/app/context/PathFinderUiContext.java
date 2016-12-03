@@ -1,17 +1,15 @@
 package pathfinder.app.context;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.I18NBundle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import graph.GraphInitializer;
@@ -33,7 +31,7 @@ public class PathFinderUiContext implements GraphUiContext {
 
     private Map<TextureName, TextureRegion> texturesRegions = new HashMap<>();
     private Graph graph;
-    private I18NBundle uiProps;
+    private ResourceBundle uiProps;
     private ArrayList<EdgeAttribute> attributes;
     private Skin skin;
 
@@ -55,8 +53,8 @@ public class PathFinderUiContext implements GraphUiContext {
         final PathFinderUiContext context = new PathFinderUiContext();
         ScreensContextHolder.hold(context);
         context.graph = GraphInitializer.initialize();
-        FileHandle baseFileHandle = Gdx.files.internal("localization");
-        context.uiProps = I18NBundle.createBundle(baseFileHandle, Locale.getDefault());
+        ResourceBundle bundle = ResourceBundle.getBundle("localization");
+        context.uiProps = bundle;
         context.initTextures();
         context.attributes = new ArrayList<>(Arrays.asList(EdgeAttribute.values()));
         context.skin = new Skin(Gdx.files.internal("uiskin.json"), new TextureAtlas(Gdx.files.internal("uiskin.atlas")));
@@ -102,7 +100,7 @@ public class PathFinderUiContext implements GraphUiContext {
     }
 
     @Override
-    public I18NBundle getUiProps() {
+    public ResourceBundle getUiProps() {
         return uiProps;
     }
 

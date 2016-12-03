@@ -1,14 +1,11 @@
 package graph;
 
-import com.google.common.base.Throwables;
-
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStreamReader;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.Optional;
@@ -50,8 +47,8 @@ public class GraphInitializer {
     private static class GraphReader {
 
         public static void readAndBuild(Set<Vertex> nodes, Set<Edge> edges) {
-            try {
-                Files.lines(Paths.get(ClassLoader.getSystemResource(MAP1_DATA_FILE_NAME).toURI())).forEach(s -> {
+            try(BufferedReader br = new BufferedReader(new InputStreamReader(GraphInitializer.class.getClassLoader().getResourceAsStream(MAP1_DATA_FILE_NAME)))) {
+                br.lines().forEach(s -> {
                     final String normalized = s.replaceAll("\\s+","");
                     if (normalized.contains("-")) {
                         String[] result = normalized.split("-");
@@ -67,10 +64,10 @@ public class GraphInitializer {
                         nodes.add(createVertex(normalized));
                     }
                 });
-            } catch (IOException | URISyntaxException e) {
-                LOGGER.error(e);
-                throw Throwables.propagate(e);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
         }
 
         private static Vertex resolveVertex(String id, Set<Vertex> nodes) {

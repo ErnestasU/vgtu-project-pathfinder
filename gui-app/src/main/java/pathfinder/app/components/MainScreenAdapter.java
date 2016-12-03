@@ -15,10 +15,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.I18NBundle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import manager.CompetitionManager;
 import pathfinder.app.PathFinderScreensManager;
@@ -149,9 +149,9 @@ public class MainScreenAdapter extends ScreenAdapter {
     }
 
     private void initButtons() {
-        I18NBundle props = ScreensContextHolder.get().getUiProps();
+        ResourceBundle props = ScreensContextHolder.get().getUiProps();
 
-        buttonCalc = new TextButton(props.get("button.calculate"), ctx.getSkin());
+        buttonCalc = new TextButton(props.getString("button.calculate"), ctx.getSkin());
         buttonCalc.setPosition(11, 658);
         buttonCalc.setSize(310, 60);
         buttonCalc.addListener(new ClickListener() {
@@ -164,7 +164,7 @@ public class MainScreenAdapter extends ScreenAdapter {
             }
         });
 
-        buttonClear = new TextButton(props.get("button.clear"), ctx.getSkin());
+        buttonClear = new TextButton(props.getString("button.clear"), ctx.getSkin());
         buttonClear.setPosition(330, 658);
         buttonClear.setSize(310, 60);
         buttonClear.addListener(new ClickListener() {
@@ -192,7 +192,7 @@ public class MainScreenAdapter extends ScreenAdapter {
         edgeAttributeDrawable.setSelected(selected);
         edgeAttributeDrawable.refresh();
 
-        checkBoxDrawSelected = new CheckBox(props.get("checkBox.drawSelected"), ctx.getSkin());
+        checkBoxDrawSelected = new CheckBox(props.getString("checkBox.drawSelected"), ctx.getSkin());
         checkBoxDrawSelected.setPosition(880, 675);;
         checkBoxDrawSelected.addListener(new ClickListener() {
             @Override
