@@ -15,11 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import manager.CompetitionManager;
 import pathfinder.app.PathFinderScreensManager;
 import pathfinder.app.attributes.TextureName;
@@ -30,6 +25,10 @@ import pathfinder.model.CompetitionResult;
 import pathfinder.model.CompetitionResult.Competitor;
 import pathfinder.model.graph.Edge;
 import pathfinder.model.graph.Vertex;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 
 /**
@@ -58,6 +57,8 @@ public class MainScreenAdapter extends ScreenAdapter {
     private SelectBox<String> selectBox;
     private CheckBox checkBoxDrawSelected;
     private Label infoLabel;
+    private Label resultLabel;
+    private Label winnerLabel;
 
     public MainScreenAdapter(PathFinderScreensManager pathFinderScreensManager) {
         this.pathFinderScreensManager = pathFinderScreensManager;
@@ -126,6 +127,9 @@ public class MainScreenAdapter extends ScreenAdapter {
 
             drawPath(new ArrayList<>(result.getAllyCompetitor().getVertexToComplete()), Color.valueOf("FA697C"));
             drawPath(new ArrayList<>(result.getEnemyCompetitor().getVertexToComplete()), Color.valueOf("6984FA"));
+
+            displayResult(result.getAllyCompetitor().getCaloriesToExaust(), result.getEnemyCompetitor().getCaloriesToExaust());
+
         }
 
         //draw selected edge
@@ -171,6 +175,8 @@ public class MainScreenAdapter extends ScreenAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 drawPath = false;
+                resultLabel.setText("");
+                winnerLabel.setText("");
                 node.clear();
                 ctx.getGraph().setStartPointId(null);
             }
@@ -205,7 +211,14 @@ public class MainScreenAdapter extends ScreenAdapter {
         String text = "Prasome pasirinkti antro dviratininko pradzios vieta (Negalima rinktis " + firstNode + " ir " + lastNode + ")";
         infoLabel = new Label(text, ctx.getSkin());
         infoLabel.setColor(Color.WHITE);
-        infoLabel.setPosition(11, 600);
+        infoLabel.setPosition(11, 725);
+
+        resultLabel = new Label("", ctx.getSkin());
+        resultLabel.setPosition(11, 620);
+
+        winnerLabel = new Label("", ctx.getSkin());
+        winnerLabel.setPosition(11, 580);
+        winnerLabel.setFontScale(1.5f);
     }
 
     public void drawPath(List<Vertex> vertices, Color color) {
@@ -220,6 +233,29 @@ public class MainScreenAdapter extends ScreenAdapter {
             shapeRenderer.line(x1+11, y1+11, x2+11, y2+11);
         }
         shapeRenderer.end();
+    }
+
+    public void displayResult(int allyCalories, int enemyCalories) {
+        String resultText = "Pirmo dviratininko sunaudotas kaloriju skaicius yra " + allyCalories + " kcal, o antro - " + enemyCalories + " kcal.";
+        String winnerText;
+        if (allyCalories < enemyCalories) {
+            winnerText = "Pirmas dviratininkas laimejo!!!";
+            resultLabel.setColor(Color.GREEN);
+            winnerLabel.setColor(Color.GREEN);
+        } else  if (allyCalories > enemyCalories){
+            winnerText = "Antras dviratininkas laimejo!!!";
+            resultLabel.setColor(Color.RED);
+            winnerLabel.setColor(Color.RED);
+        } else {
+            winnerText = "Abu atvaziavo vienu metu!!!";
+            resultLabel.setColor(Color.YELLOW);
+            winnerLabel.setColor(Color.YELLOW);
+        }
+        resultLabel.setText(resultText);
+        winnerLabel.setText(winnerText);
+
+       stage.addActor(resultLabel);
+       stage.addActor(winnerLabel);
     }
 
 }
