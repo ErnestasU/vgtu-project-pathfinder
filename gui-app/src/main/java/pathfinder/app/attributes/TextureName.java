@@ -6,7 +6,6 @@ package pathfinder.app.attributes;
  */
 public enum TextureName {
 
-    BACKGROUND,
     PATHMAP,
-    BUTTON
+    INFO_BOX
 }

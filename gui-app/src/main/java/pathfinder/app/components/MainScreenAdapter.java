@@ -102,6 +102,12 @@ public class MainScreenAdapter extends ScreenAdapter {
         pathFinderScreensManager.getBatcher().draw(context.getTextureRegionByName(TextureName.PATHMAP), 11, 11, 655, 542);
         pathFinderScreensManager.getBatcher().end();
 
+        //draw info box
+        pathFinderScreensManager.getBatcher().enableBlending();
+        pathFinderScreensManager.getBatcher().begin();
+        pathFinderScreensManager.getBatcher().draw(context.getTextureRegionByName(TextureName.INFO_BOX), 680, 11, 330, 118);
+        pathFinderScreensManager.getBatcher().end();
+
 
         //add nodes to map
         for (NodeImageButton nodeImageButton : node.getNodes()){
@@ -118,8 +124,8 @@ public class MainScreenAdapter extends ScreenAdapter {
             final Competitor enemy = manager.summaryCompetitor(selectedVertex);
             final CompetitionResult result = manager.compete(enemy);
 
-            drawPath(new ArrayList<>(result.getAllyCompetitor().getVertexToComplete()), Color.BLUE);
-            drawPath(new ArrayList<>(result.getEnemyCompetitor().getVertexToComplete()), Color.BLACK);
+            drawPath(new ArrayList<>(result.getAllyCompetitor().getVertexToComplete()), Color.valueOf("FA697C"));
+            drawPath(new ArrayList<>(result.getEnemyCompetitor().getVertexToComplete()), Color.valueOf("6984FA"));
         }
 
         //draw selected edge

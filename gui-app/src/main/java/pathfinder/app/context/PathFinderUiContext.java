@@ -6,6 +6,14 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.I18NBundle;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
 import graph.GraphInitializer;
 import pathfinder.app.attributes.TextureName;
 import pathfinder.app.utils.TextUtils;
@@ -14,8 +22,6 @@ import pathfinder.model.graph.Edge;
 import pathfinder.model.graph.EdgeAttribute;
 import pathfinder.model.graph.Graph;
 import pathfinder.model.graph.Vertex;
-
-import java.util.*;
 
 import static pathfinder.app.constants.GeneralConstant.MAP_DATA_DIR;
 
@@ -60,6 +66,8 @@ public class PathFinderUiContext implements GraphUiContext {
         // initial path map
         texturesRegions.put(TextureName.PATHMAP, TextureUtils.buildTextureRegion(TextUtils.joinPath(MAP_DATA_DIR,"map1.png"),
                                                                                     0, 0, 655, 542));
+        texturesRegions.put(TextureName.INFO_BOX, TextureUtils.buildTextureRegion(TextUtils.joinPath(MAP_DATA_DIR,"info-box.jpg"),
+                                                                                                                 0, 0, 294, 92));
         // the rest textures....
     }
 

@@ -5,13 +5,19 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import pathfinder.app.context.GraphUiContext;
 import pathfinder.app.context.ScreensContextHolder;
 import pathfinder.model.graph.Edge;
 import pathfinder.model.graph.EdgeAttribute;
 import pathfinder.model.graph.FeaturedEdge;
-
-import java.util.*;
 
 /**
  * Created by TT on 2016-11-30.
@@ -116,7 +122,7 @@ public class EdgeAttributeDrawable {
 
     public void drawSelectedEdge(ShapeRenderer shapeRenderer){
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.GREEN);
+        shapeRenderer.setColor(Color.valueOf("69D6FA"));
         shapeRenderer.line(sourceX+11, sourceY+11, destX+11, destY+11);
         shapeRenderer.end();
     }
