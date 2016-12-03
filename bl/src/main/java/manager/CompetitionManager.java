@@ -1,15 +1,11 @@
 package manager;
 
-import com.google.common.collect.Iterables;
-
 import java.util.Set;
 
 import command.impl.DjikstraCommand;
 import math.CaloriesCalculator;
-import pathfinder.model.CompetitionLostResult;
 import pathfinder.model.CompetitionResult;
-import pathfinder.model.CompetitionWinResult;
-import pathfinder.model.CompetitorSummary;
+import pathfinder.model.CompetitionResult.Competitor;
 import pathfinder.model.graph.Edge;
 import pathfinder.model.graph.Graph;
 import pathfinder.model.graph.Vertex;
@@ -26,28 +22,27 @@ public class CompetitionManager {
         this.graph = graph;
     }
 
-    public CompetitorSummary summaryCompetitor(Set<Vertex> completedPath) {
-        Vertex root = Iterables.getLast(completedPath);
+    public Competitor summaryCompetitor(Vertex currentPos) {
+        final Vertex root = currentPos;
         DjikstraCommand command = new DjikstraCommand(graph);
         command.execute(root);
         Set<Vertex> verticesToComplete = command.getPath(graph.getLastVertex());
         Set<Edge> edgesToComplete = command.getEdges(verticesToComplete);
         CaloriesCalculator caloriesCalculator = new CaloriesCalculator(edgesToComplete);
         final int caloriesToExaust = caloriesCalculator.calculate();
-        return new CompetitorSummary(command.getPath(graph.getLastVertex()), caloriesToExaust);
+        return new Competitor(caloriesToExaust, command.getPath(graph.getLastVertex()));
     }
 
-    public CompetitionResult compete(CompetitorSummary againstCompetitor) {
+    public CompetitionResult compete(Competitor againstCompetitor) {
         final DjikstraCommand command = new DjikstraCommand(graph);
         command.execute(graph.getVertices().iterator().next());
         CaloriesCalculator caloriesCalculator = new CaloriesCalculator(command.getEdges(graph.getLastVertex()));
-        final int caloriesToExaust  = caloriesCalculator.calculate();
-        final int caloriesToCompete = againstCompetitor.getCaloriesToExaust();
 
-        if (caloriesToCompete < caloriesToExaust) {
-            return new CompetitionLostResult(caloriesToExaust - caloriesToCompete, caloriesToExaust);
-        }
-        return new CompetitionWinResult(command.getPath(graph.getLastVertex()), caloriesToExaust);
-
+        final Competitor ally = new Competitor(caloriesCalculator.calculate(), command.getPath(graph.getLastVertex()));
+        final CompetitionResult result = new CompetitionResult();
+        result.setAllyCompetitorWinner(ally.getCaloriesToExaust() < againstCompetitor.getCaloriesToExaust());
+        result.setEnemyCompetitor(againstCompetitor);
+        result.setAllyCompetitor(ally);
+        return result;
     }
 }

@@ -8,23 +8,28 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.I18NBundle;
-import command.impl.DjikstraCommand;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import manager.CompetitionManager;
 import pathfinder.app.PathFinderScreensManager;
 import pathfinder.app.attributes.TextureName;
 import pathfinder.app.context.GraphUiContext;
 import pathfinder.app.context.ScreensContextHolder;
 import pathfinder.app.context.UiContext;
+import pathfinder.model.CompetitionResult;
+import pathfinder.model.CompetitionResult.Competitor;
 import pathfinder.model.graph.Edge;
 import pathfinder.model.graph.Vertex;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -108,20 +113,13 @@ public class MainScreenAdapter extends ScreenAdapter {
 
         //draw results
         if (drawPath) {
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(Color.RED);
-            final GraphUiContext ctx = ScreensContextHolder.get();
-            Set<Vertex> shortestPath = DjikstraCommand.getShortestPath(ctx.getFirstVertex(), ctx.getGraph().getLastVertex(), ctx.getGraph());
-            List<Vertex> shortestPathList = new ArrayList<>(shortestPath);
-            int x1, x2, y1, y2;
-            for (int i = 0; i < shortestPathList.size() - 1 ; i++) {
-                x1 = shortestPathList.get(i).getXCoord();
-                y1 = shortestPathList.get(i).getYCoord();
-                x2 = shortestPathList.get(i + 1).getXCoord();
-                y2 = shortestPathList.get(i + 1).getYCoord();
-                shapeRenderer.line(x1+11, y1+11, x2+11, y2+11);
-            }
-            shapeRenderer.end();
+            CompetitionManager manager = new CompetitionManager(ctx.getGraph());
+            final Vertex selectedVertex = ctx.getGraph().getVertices().stream().filter(v -> v.getId().equals(ctx.getGraph().getStartPointId())).findFirst().get();
+            final Competitor enemy = manager.summaryCompetitor(selectedVertex);
+            final CompetitionResult result = manager.compete(enemy);
+
+            drawPath(new ArrayList<>(result.getAllyCompetitor().getVertexToComplete()), Color.BLUE);
+            drawPath(new ArrayList<>(result.getEnemyCompetitor().getVertexToComplete()), Color.BLACK);
         }
 
         //draw selected edge
@@ -202,6 +200,20 @@ public class MainScreenAdapter extends ScreenAdapter {
         infoLabel = new Label(text, ctx.getSkin());
         infoLabel.setColor(Color.WHITE);
         infoLabel.setPosition(11, 600);
+    }
+
+    public void drawPath(List<Vertex> vertices, Color color) {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(color);
+        int x1, x2, y1, y2;
+        for (int i = 0; i < vertices.size() - 1 ; i++) {
+            x1 = vertices.get(i).getXCoord();
+            y1 = vertices.get(i).getYCoord();
+            x2 = vertices.get(i + 1).getXCoord();
+            y2 = vertices.get(i + 1).getYCoord();
+            shapeRenderer.line(x1+11, y1+11, x2+11, y2+11);
+        }
+        shapeRenderer.end();
     }
 
 }
