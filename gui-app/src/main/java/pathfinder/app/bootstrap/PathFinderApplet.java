@@ -11,4 +11,8 @@ public class PathFinderApplet extends LwjglApplet {
     public PathFinderApplet() {
         super(new PathFinderScreensManager(), PathFinderStarter.config());
     }
+
+    public static void main(String[] args) {
+        new PathFinderApplet();
+    }
 }
