@@ -16,7 +16,7 @@
 
     <properties>
         <BootstrapClassName>PathFinder</BootstrapClassName>
-        <mainClass>pathfinder.app.bootstrap.PathFinderApplet</mainClass>
+        <mainClass>pathfinder.app.bootstrap.PathFinderDesktop</mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
